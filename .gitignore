@@ -16,3 +16,6 @@ y.output
 y.tab.h
 y.tab.c
 a.out
+
+# antlr
+/output
