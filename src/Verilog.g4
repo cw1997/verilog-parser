@@ -18,7 +18,7 @@ parameterName: ID;
 
 portBlock: PARENTHESIS_LEFT portList PARENTHESIS_RIGHT;
 portList: portItem (COMMA portItem)*;
-portItem: PORT_DIRECTION netType? BIT_RANGE? portNameList;
+portItem: PORT_DIRECTION netType? bitRange? portNameList;
 portNameList: portName (COMMA portName)*;
 portName: ID;
 
@@ -31,21 +31,21 @@ moduleBody: assign
 moduleFooter: ENDMODULE;
 
 
+variable: ID|NUMBER_INTEGER;
+lValue: ID;
+rValue: OPERATOR_UNARY?variable;
 
-assign: ASSIGN ID EQUAL NUMBER_INTEGER SEMICOLON;
+assign: ASSIGN lValue EQUAL rValue SEMICOLON;
 
-always: ALWAYS AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT BEGIN alwaysBody END;
+always: ALWAYS AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT BEGIN alwaysBody* END;
 
 eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
-eventItem: EDGE ID;
+eventItem: EDGE lValue;
 
-alwaysBody: (statement|conditionBlock)*;
+alwaysBody: statement|conditionBlock;
 
 statement: lValue assignment expression SEMICOLON;
 expression: rValue (operator rValue)*;
-
-lValue: OPERATOR_UNARY?ID;
-rValue: OPERATOR_UNARY?(ID|NUMBER_INTEGER);
 
 conditionBlock: IF condition codeBlock
 | conditionBlock ELSE conditionBlock
@@ -54,6 +54,8 @@ conditionBlock: IF condition codeBlock
 
 condition: PARENTHESIS_LEFT expression PARENTHESIS_RIGHT;
 codeBlock: BEGIN statement* END;
+
+bitRange: BRACKET_LEFT NUMBER_INTEGER? COLON NUMBER_INTEGER? BRACKET_RIGHT;
 
 assignment: EQUAL|LESS_THAN_EQUAL;
 netType: WIRE|REG;
@@ -68,12 +70,15 @@ COMMENT: '//' .*? ('\r'? '\n' | EOF) -> skip;
 PARENTHESIS_LEFT: '(';
 PARENTHESIS_RIGHT: ')';
 
+BRACKET_LEFT: '[';
+BRACKET_RIGHT: ']';
+
 PORT_DIRECTION: 'input'|'output'|'inout';
 EDGE: 'posedge'|'negedge';
 
 COMMA: ',';
 SEMICOLON: ';';
-fragment COLON: ':';
+COLON: ':';
 POUND: '#';
 
 MODULE: 'module';
@@ -95,9 +100,6 @@ LESS_THAN_EQUAL: '<=';
 
 WIRE: 'wire';
 REG: 'reg';
-// fragment LOGIC: 'logic';
-
-BIT_RANGE: '['NUMBER_INTEGER_WITH_BIT_LEADER? COLON NUMBER_INTEGER_WITH_BIT_LEADER?']';
 
 OPERATOR_BOOLEAN_TEXT: 'and'|'or'|'xor'|'not';
 OPERATOR_BOOLEAN_SYMBOL_SINGLE: '&'|'|'|'^';
