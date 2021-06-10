@@ -1,0 +1,138 @@
+grammar Verilog;
+
+//@header{package me.changwei.verilog;}
+
+options {
+}
+
+// grammer
+
+start: moduleHeader moduleBody* moduleFooter EOF;
+
+moduleHeader: MODULE ID parameterBlock? portBlock? SEMICOLON;
+
+parameterBlock: POUND PARENTHESIS_LEFT parameterList PARENTHESIS_RIGHT;
+parameterList: parameterItem (COMMA parameterItem)*;
+parameterItem: parameterName (EQUAL NUMBER_INTEGER)?;
+parameterName: ID;
+
+portBlock: PARENTHESIS_LEFT portList PARENTHESIS_RIGHT;
+portList: portItem (COMMA portItem)*;
+portItem: PORT_DIRECTION netType? BIT_RANGE? portNameList;
+portNameList: portName (COMMA portName)*;
+portName: ID;
+
+
+moduleBody: assign
+| always
+;
+
+
+moduleFooter: ENDMODULE;
+
+
+
+assign: ASSIGN ID EQUAL NUMBER_INTEGER SEMICOLON;
+
+always: ALWAYS AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT BEGIN alwaysBody END;
+
+eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
+eventItem: EDGE ID;
+
+alwaysBody: (statement|conditionBlock)*;
+
+statement: lValue assignment expression SEMICOLON;
+expression: rValue (operator rValue)*;
+
+lValue: OPERATOR_UNARY?ID;
+rValue: OPERATOR_UNARY?(ID|NUMBER_INTEGER);
+
+conditionBlock: IF condition codeBlock
+| conditionBlock ELSE conditionBlock
+| conditionBlock ELSE codeBlock
+;
+
+condition: PARENTHESIS_LEFT expression PARENTHESIS_RIGHT;
+codeBlock: BEGIN statement* END;
+
+assignment: EQUAL|LESS_THAN_EQUAL;
+netType: WIRE|REG;
+operator: OPERATOR_BOOLEAN_TEXT|OPERATOR_BOOLEAN_SYMBOL_SINGLE|OPERATOR_BOOLEAN_SYMBOL_DOUBLE|OPERATOR_ARITHMETIC;
+
+// lexer
+
+SPACE: [ \t]+ -> skip;
+BREAK_LINE: [\r\n]+ -> skip;
+COMMENT: '//' .*? ('\r'? '\n' | EOF) -> skip;
+
+PARENTHESIS_LEFT: '(';
+PARENTHESIS_RIGHT: ')';
+
+PORT_DIRECTION: 'input'|'output'|'inout';
+EDGE: 'posedge'|'negedge';
+
+COMMA: ',';
+SEMICOLON: ';';
+fragment COLON: ':';
+POUND: '#';
+
+MODULE: 'module';
+ENDMODULE: 'endmodule';
+
+ASSIGN: 'assign';
+
+ALWAYS: 'always';
+AT: '@';
+
+BEGIN: 'begin';
+END: 'end';
+
+IF: 'if';
+ELSE: 'else';
+
+EQUAL: '=';
+LESS_THAN_EQUAL: '<=';
+
+WIRE: 'wire';
+REG: 'reg';
+// fragment LOGIC: 'logic';
+
+BIT_RANGE: '['NUMBER_INTEGER_WITH_BIT_LEADER? COLON NUMBER_INTEGER_WITH_BIT_LEADER?']';
+
+OPERATOR_BOOLEAN_TEXT: 'and'|'or'|'xor'|'not';
+OPERATOR_BOOLEAN_SYMBOL_SINGLE: '&'|'|'|'^';
+OPERATOR_BOOLEAN_SYMBOL_DOUBLE: '&&'|'||'|'^^';
+OPERATOR_ARITHMETIC: '+'|'-'|'*'|'/';
+OPERATOR_UNARY: '~'|'!';
+
+fragment UNDERLINE: '_';
+fragment LETTER: [a-zA-Z];
+fragment DIGIT_HEX_WITHOUT_ZERO: [1-9a-fA-F];
+fragment DIGIT_HEX: ('0'|DIGIT_HEX_WITHOUT_ZERO);
+fragment DIGIT_DEC_WITHOUT_ZERO: [1-9];
+fragment DIGIT_DEC: ('0'|DIGIT_DEC_WITHOUT_ZERO);
+fragment DIGIT_OCT_WITHOUT_ZERO: [1-7];
+fragment DIGIT_OCT: ('0'|DIGIT_HEX_WITHOUT_ZERO);
+fragment DIGIT_BIN_WITHOUT_ZERO: [1];
+fragment DIGIT_BIN: ('0'|DIGIT_HEX_WITHOUT_ZERO);
+
+// allow: a123, _a123, _123, disallow: 0123, 123, 123_, 1a
+ID: (LETTER|UNDERLINE)(LETTER|UNDERLINE|DIGIT_DEC)*;
+
+// allow: 123, disallow: 0123
+// NUMBER_DEC_INTEGER_WITHOUT_BIT_LEADER: (DIGIT_DEC_WITHOUT_ZERO)(DIGIT_DEC)*; 
+fragment NUMBER_HEX_INTEGER_WITHOUT_BIT_LEADER: ((DIGIT_HEX+UNDERLINE*DIGIT_HEX+)|DIGIT_HEX)+;
+fragment NUMBER_DEC_INTEGER_WITHOUT_BIT_LEADER: ((DIGIT_DEC+UNDERLINE*DIGIT_DEC+)|DIGIT_DEC)+;
+fragment NUMBER_OCT_INTEGER_WITHOUT_BIT_LEADER: ((DIGIT_OCT+UNDERLINE*DIGIT_OCT+)|DIGIT_OCT)+;
+fragment NUMBER_BIN_INTEGER_WITHOUT_BIT_LEADER: ((DIGIT_BIN+UNDERLINE*DIGIT_BIN+)|DIGIT_BIN)+;
+
+fragment NUMBER_INTEGER_WITHOUT_BIT_LEADER: (NUMBER_HEX_INTEGER_WITHOUT_BIT_LEADER|NUMBER_DEC_INTEGER_WITHOUT_BIT_LEADER|NUMBER_OCT_INTEGER_WITHOUT_BIT_LEADER|NUMBER_BIN_INTEGER_WITHOUT_BIT_LEADER);
+
+fragment NUMBER_HEX_INTEGER_WITH_BIT_LEADER: NUMBER_HEX_INTEGER_WITHOUT_BIT_LEADER'\''[Hh]NUMBER_HEX_INTEGER_WITHOUT_BIT_LEADER;
+fragment NUMBER_DEC_INTEGER_WITH_BIT_LEADER: NUMBER_DEC_INTEGER_WITHOUT_BIT_LEADER'\''[Dd]NUMBER_DEC_INTEGER_WITHOUT_BIT_LEADER;
+fragment NUMBER_OCT_INTEGER_WITH_BIT_LEADER: NUMBER_OCT_INTEGER_WITHOUT_BIT_LEADER'\''[Oo]NUMBER_OCT_INTEGER_WITHOUT_BIT_LEADER;
+fragment NUMBER_BIN_INTEGER_WITH_BIT_LEADER: NUMBER_BIN_INTEGER_WITHOUT_BIT_LEADER'\''[Bb]NUMBER_BIN_INTEGER_WITHOUT_BIT_LEADER;
+
+fragment NUMBER_INTEGER_WITH_BIT_LEADER: (NUMBER_HEX_INTEGER_WITH_BIT_LEADER|NUMBER_DEC_INTEGER_WITH_BIT_LEADER|NUMBER_OCT_INTEGER_WITH_BIT_LEADER|NUMBER_BIN_INTEGER_WITH_BIT_LEADER);
+
+NUMBER_INTEGER: NUMBER_INTEGER_WITHOUT_BIT_LEADER|NUMBER_INTEGER_WITH_BIT_LEADER;
