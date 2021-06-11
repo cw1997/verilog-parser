@@ -7,12 +7,12 @@
 PACKAGE='me.changwei.verilog.parser'
 NAME='Verilog'
 START='start'
-FILE='../../../../../../../../add2.v'
+FILE='../../../add2.v'
 OUTPUT_DIRECTORY='./verilog'
 SUB_DIRECTORY='/me/changwei/verilog/parser'
-OUTPUT_SRC_DIRECTORY="${OUTPUT_DIRECTORY}/src/main/java${SUB_DIRECTORY}"
+OUTPUT_SRC_DIRECTORY="${OUTPUT_DIRECTORY}/target/generated-sources${SUB_DIRECTORY}"
 OUTPUT_BIN_DIRECTORY="${OUTPUT_DIRECTORY}/target/classes"
-EXECUTABLE_BIN_DIRECTORY="${OUTPUT_BIN_DIRECTORY}${SUB_DIRECTORY}"
+EXECUTABLE_BIN_DIRECTORY="${OUTPUT_BIN_DIRECTORY}"
 
 java org.antlr.v4.Tool -listener -visitor -long-messages ./src/${NAME}.g4 -o ${OUTPUT_SRC_DIRECTORY} -package ${PACKAGE} && \
 mkdir -p ${OUTPUT_BIN_DIRECTORY} && \
