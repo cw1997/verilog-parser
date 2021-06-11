@@ -1,12 +1,11 @@
 grammar Verilog;
 
-//@header{package me.changwei.verilog;}
+//@header{package me.changwei.verilog.parser;}
 
 options {
 }
 
 // grammer
-
 start: moduleHeader moduleBody* moduleFooter EOF;
 
 moduleHeader: MODULE ID parameterBlock? portBlock? SEMICOLON;
