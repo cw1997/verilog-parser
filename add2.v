@@ -34,12 +34,21 @@ always @(posedge clk or negedge rst_n) begin
 end
 
 // result_and
-always @(posedge clk or negedge rst_n) begin
-    if (~rst_n) begin
-        result_and <= 9'b0;
-    end else begin
-        result_and <= add1 & add2;
-    end
-end
+// always @(posedge clk or negedge rst_n) begin
+//     if (~rst_n) begin
+//         result_and <= 9'b0;
+//     end else if (2 == 1 + 1) begin
+//         // if (4 == 1+2) begin
+//         //     if (3 == 6 / 2) begin
+//         //         result_and <= add1 & add2;
+//         //     end else begin
+//         //         // pass
+//         //     end
+//         // end
+//         result_and <= add1 & add2;
+//     end else begin
+//         result_and <= add1 & add2;
+//     end
+// end
     
 endmodule
