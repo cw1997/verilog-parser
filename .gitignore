@@ -20,3 +20,5 @@ a.out
 # antlr
 /output
 .antlr
+/verilog/src/main/java/me/changwei/verilog/parser
+/verilog/target
