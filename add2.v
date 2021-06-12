@@ -32,6 +32,8 @@ wire w2 = 1, w3 = 0;
 wire        w1;
 wire [31:0] w2, w3;
 
+wire [7:0] complexExpression = 1 + (2 + 3) * 4 + 6 / (7 - 8)- w2 * (2 | w3 & (w1 + 9 * (123 + (45) % 6)));
+
 // this is comment
 assign result_ori = 9'b0_1234_5678;
 // assign result = add1 + add2;
