@@ -61,9 +61,13 @@ wireItem: lValue EQUAL rValue;
 regList: netType bitRange? regItem (COMMA regItem)* SEMICOLON;
 regItem: lValue;
 
-always: ALWAYS AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT BEGIN alwaysBody* END;
+//always @(eventList|*) begin alwaysBody* end;
+always: ALWAYS AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT BEGIN alwaysBody* END;
 
+eventAny: STAR;
+//posedge clk or negedge rst_n
 eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
+//posedge clk
 eventItem: EDGE lValue;
 
 alwaysBody: statement|conditionBlock;
@@ -104,6 +108,7 @@ COMMA: ',';
 SEMICOLON: ';';
 COLON: ':';
 POUND: '#';
+STAR: '*';
 
 MODULE: 'module';
 ENDMODULE: 'endmodule';
