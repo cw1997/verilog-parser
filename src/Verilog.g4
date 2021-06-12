@@ -150,6 +150,7 @@ OPERATOR_BOOLEAN_TEXT: 'and'|'or'|'xor'|'not';
 
 EQUAL: '=';
 
+//operator order by priority
 OPERATOR_UNARY: '~'|'!';
 
 MOD: '%';
