@@ -10,8 +10,10 @@ start: moduleHeader moduleBody* moduleFooter EOF;
 
 moduleHeader: MODULE ID parameterBlock? portBlock? SEMICOLON;
 
-parameterBlock: POUND PARENTHESIS_LEFT parameterList PARENTHESIS_RIGHT;
-parameterList: parameterItem (COMMA parameterItem)*;
+//#(parameterList?)
+parameterBlock: POUND PARENTHESIS_LEFT parameterList? PARENTHESIS_RIGHT;
+//parameter netName1 = 123, netName2 = 7'd456
+parameterList: PARAMETER parameterItem (COMMA parameterItem)*;
 parameterItem: parameterName (EQUAL NUMBER_INTEGER)?;
 parameterName: ID;
 
@@ -22,7 +24,11 @@ portNameList: portName (COMMA portName)*;
 portName: ID;
 
 
-moduleBody: assign
+moduleBody
+: assign
+| paramList
+| wireList
+| regList
 | always
 ;
 
@@ -30,11 +36,26 @@ moduleBody: assign
 moduleFooter: ENDMODULE;
 
 
-variable: ID|NUMBER_INTEGER;
+variable: NUMBER_INTEGER|ID;
 lValue: ID;
 rValue: OPERATOR_UNARY?variable;
 
+//assign wire1 = 8'b1234_5678;
 assign: ASSIGN lValue EQUAL rValue SEMICOLON;
+
+//localparam netName1 = 123, netName2 = 7'd456;
+paramList: (localparamList|parameterList) SEMICOLON;
+localparamList: LOCALPARAM localparamItem (COMMA localparamItem)*;
+localparamItem: lValue EQUAL NUMBER_INTEGER;
+
+//wire [7:0] netName = 123;
+//wire [7:0] netName1 = 123, netName2 = 7'd456;
+wireList: netType bitRange? wireItem (COMMA wireItem)* SEMICOLON;
+wireItem: lValue EQUAL rValue;
+//reg [7:0] netName = 123;
+//reg [7:0] netName1 = 123, netName2 = 7'd456;
+regList: netType bitRange? regItem (COMMA regItem)* SEMICOLON;
+regItem: lValue;
 
 always: ALWAYS AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT BEGIN alwaysBody* END;
 
@@ -82,6 +103,9 @@ POUND: '#';
 
 MODULE: 'module';
 ENDMODULE: 'endmodule';
+
+PARAMETER: 'parameter';
+LOCALPARAM: 'localparam';
 
 ASSIGN: 'assign';
 
@@ -136,4 +160,4 @@ fragment NUMBER_BIN_INTEGER_WITH_BIT_LEADER: NUMBER_BIN_INTEGER_WITHOUT_BIT_LEAD
 
 fragment NUMBER_INTEGER_WITH_BIT_LEADER: (NUMBER_HEX_INTEGER_WITH_BIT_LEADER|NUMBER_DEC_INTEGER_WITH_BIT_LEADER|NUMBER_OCT_INTEGER_WITH_BIT_LEADER|NUMBER_BIN_INTEGER_WITH_BIT_LEADER);
 
-NUMBER_INTEGER: NUMBER_INTEGER_WITHOUT_BIT_LEADER|NUMBER_INTEGER_WITH_BIT_LEADER;
+NUMBER_INTEGER: NUMBER_INTEGER_WITH_BIT_LEADER|NUMBER_INTEGER_WITHOUT_BIT_LEADER;
