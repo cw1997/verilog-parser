@@ -41,8 +41,19 @@ moduleFooter: ENDMODULE;
 //========================================
 
 variable: NUMBER_INTEGER|ID;
+operand: OPERATOR_UNARY?variable;
 lValue: ID;
-rValue: OPERATOR_UNARY?variable;
+rValue
+: rValue (MUL|DIV|MOD) rValue
+| rValue (ADD|SUB) rValue
+| rValue (SHIFT_LEFT|SHIFT_RIGHT) rValue
+| rValue (LESS_THAN|LESS_THAN_EQUAL|GRATER_THAN|GRATER_THAN_EQUAL) rValue
+| rValue (DOUBLE_EQUAL|DOUBLE_NONEQUAL) rValue
+| rValue (OPERATOR_BOOLEAN_SYMBOL_SINGLE) rValue
+| rValue (OPERATOR_BOOLEAN_SYMBOL_DOUBLE) rValue
+| operand
+| PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT
+;
 
 //assign wire1 = 8'b1234_5678;
 assign: ASSIGN lValue EQUAL rValue SEMICOLON;
@@ -68,7 +79,7 @@ regItem: lValue;
 //always @(eventList|*) begin alwaysBody* end;
 always: ALWAYS AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT BEGIN alwaysBody* END;
 
-eventAny: STAR;
+eventAny: '*';
 //posedge clk or negedge rst_n
 eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
 //posedge clk
@@ -76,15 +87,14 @@ eventItem: EDGE lValue;
 
 alwaysBody: statement|conditionBlock;
 
-statement: lValue assignment expression SEMICOLON;
-expression: rValue (operator rValue)*;
+statement: lValue assignment rValue SEMICOLON;
 
 conditionBlock: IF condition codeBlock
 | conditionBlock ELSE conditionBlock
 | conditionBlock ELSE codeBlock
 ;
 
-condition: PARENTHESIS_LEFT expression PARENTHESIS_RIGHT;
+condition: PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT;
 codeBlock: BEGIN statement* END;
 
 //[7:0] [:0] [7:] [:]
@@ -92,7 +102,7 @@ bitRange: BRACKET_LEFT NUMBER_INTEGER? COLON NUMBER_INTEGER? BRACKET_RIGHT;
 
 assignment: EQUAL|LESS_THAN_EQUAL;
 netType: WIRE|REG;
-operator: OPERATOR_BOOLEAN_TEXT|OPERATOR_BOOLEAN_SYMBOL_SINGLE|OPERATOR_BOOLEAN_SYMBOL_DOUBLE|OPERATOR_ARITHMETIC;
+//operator: OPERATOR_BOOLEAN_TEXT|OPERATOR_BOOLEAN_SYMBOL_SINGLE|OPERATOR_BOOLEAN_SYMBOL_DOUBLE;
 
 // lexer
 
@@ -113,7 +123,6 @@ COMMA: ',';
 SEMICOLON: ';';
 COLON: ':';
 POUND: '#';
-STAR: '*';
 
 MODULE: 'module';
 ENDMODULE: 'endmodule';
@@ -132,17 +141,38 @@ END: 'end';
 IF: 'if';
 ELSE: 'else';
 
-EQUAL: '=';
-LESS_THAN_EQUAL: '<=';
-
 WIRE: 'wire';
 REG: 'reg';
 
 OPERATOR_BOOLEAN_TEXT: 'and'|'or'|'xor'|'not';
-OPERATOR_BOOLEAN_SYMBOL_SINGLE: '&'|'|'|'^';
-OPERATOR_BOOLEAN_SYMBOL_DOUBLE: '&&'|'||'|'^^';
-OPERATOR_ARITHMETIC: '+'|'-'|'*'|'/';
+//OPERATOR_BOOLEAN_SYMBOL: OPERATOR_BOOLEAN_SYMBOL_DOUBLE|OPERATOR_BOOLEAN_SYMBOL_SINGLE;
+//OPERATOR_ARITHMETIC: '*'|'/'|'+'|'-';
+
+EQUAL: '=';
+
 OPERATOR_UNARY: '~'|'!';
+
+MOD: '%';
+MUL: '*';
+DIV: '/';
+
+ADD: '+';
+SUB: '-';
+
+SHIFT_LEFT: '<<';
+SHIFT_RIGHT: '>>';
+
+LESS_THAN: '<';
+LESS_THAN_EQUAL: '<=';
+GRATER_THAN: '>';
+GRATER_THAN_EQUAL: '>=';
+
+DOUBLE_EQUAL: '==';
+DOUBLE_NONEQUAL: '!==';
+
+OPERATOR_BOOLEAN_SYMBOL_SINGLE: '&'|'|'|'^';
+
+OPERATOR_BOOLEAN_SYMBOL_DOUBLE: '&&'|'||'|'^^';
 
 fragment UNDERLINE: '_';
 fragment LETTER: [a-zA-Z];
