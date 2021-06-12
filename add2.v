@@ -1,4 +1,5 @@
 module add2 #(
+    parameter
     clock_freq_hz = 50_000_000,
     clock_ns_per_hz = 20
 ) (
@@ -10,6 +11,26 @@ module add2 #(
     output      [ 8:0] result,
     input              clk, rst_n
 );
+
+parameter require_carry = 1;
+localparam lp1 = 8'b0, lp2 = 15'hfc;
+localparam
+lp1 = 8'b0,
+lp2 = 15'hfc,
+unused = 0
+;
+
+reg [15:0] r1, r2, r3;
+reg r1, r2, r3;
+reg        r4;
+reg [15:0] r4;
+
+wire [31:0] w1;
+wire w2, w3;
+wire [31:0] w1 = 32'habcd_ef00;
+wire w2 = 1, w3 = 0;
+wire        w1;
+wire [31:0] w2, w3;
 
 // this is comment
 assign result_ori = 9'b0_1234_5678;
