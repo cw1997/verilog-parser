@@ -54,10 +54,14 @@ localparamItem: lValue EQUAL NUMBER_INTEGER;
 
 //wire [7:0] netName = 123;
 //wire [7:0] netName1 = 123, netName2 = 7'd456;
+//wire netName = 123;
+//wire netName1 = 123, netName2 = 7'd456;
 wireList: netType bitRange? wireItem (COMMA wireItem)* SEMICOLON;
 wireItem: lValue EQUAL rValue;
 //reg [7:0] netName = 123;
 //reg [7:0] netName1 = 123, netName2 = 7'd456;
+//reg       netName = 123;
+//reg       netName1 = 123, netName2 = 7'd456;
 regList: netType bitRange? regItem (COMMA regItem)* SEMICOLON;
 regItem: lValue;
 
