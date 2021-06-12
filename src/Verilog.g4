@@ -89,13 +89,9 @@ alwaysBody: statement|conditionBlock;
 
 statement: lValue assignment rValue SEMICOLON;
 
-conditionBlock: IF condition codeBlock
-| conditionBlock ELSE conditionBlock
-| conditionBlock ELSE codeBlock
-;
-
+conditionBlock: IF condition (codeBlock|(ELSE (codeBlock|conditionBlock)))+;
 condition: PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT;
-codeBlock: BEGIN statement* END;
+codeBlock: BEGIN (statement|conditionBlock)* END;
 
 //[7:0] [:0] [7:] [:]
 bitRange: BRACKET_LEFT NUMBER_INTEGER? COLON NUMBER_INTEGER? BRACKET_RIGHT;
