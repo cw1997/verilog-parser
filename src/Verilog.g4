@@ -6,7 +6,7 @@ options {
 }
 
 // grammer
-start: moduleHeader moduleBody* moduleFooter EOF;
+start: moduleHeader moduleBody moduleFooter EOF;
 
 moduleHeader: MODULE ID parameterBlock? portBlock? SEMICOLON;
 
@@ -27,18 +27,18 @@ portItem: PORT_DIRECTION netType? bitRange? portNameList;
 portNameList: portName (COMMA portName)*;
 portName: ID;
 
-
-moduleBody
-: assign
+moduleBody:
+( assign
 | paramList
 | wireList
 | regList
 | always
+)*
 ;
-
 
 moduleFooter: ENDMODULE;
 
+//========================================
 
 variable: NUMBER_INTEGER|ID;
 lValue: ID;
