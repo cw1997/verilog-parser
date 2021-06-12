@@ -83,6 +83,7 @@ conditionBlock: IF condition codeBlock
 condition: PARENTHESIS_LEFT expression PARENTHESIS_RIGHT;
 codeBlock: BEGIN statement* END;
 
+//[7:0] [:0] [7:] [:]
 bitRange: BRACKET_LEFT NUMBER_INTEGER? COLON NUMBER_INTEGER? BRACKET_RIGHT;
 
 assignment: EQUAL|LESS_THAN_EQUAL;
