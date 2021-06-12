@@ -18,7 +18,7 @@ parameterItem: parameterName (EQUAL NUMBER_INTEGER)?;
 parameterName: ID;
 
 //(portList)
-portBlock: PARENTHESIS_LEFT portList PARENTHESIS_RIGHT;
+portBlock: PARENTHESIS_LEFT portList? PARENTHESIS_RIGHT;
 //input i1, i2
 portList: portItem (COMMA portItem)*;
 //output wire [3:0] o1, o2,
