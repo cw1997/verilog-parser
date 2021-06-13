@@ -7,8 +7,8 @@
 PACKAGE='me.changwei.verilog.parser'
 NAME='Verilog'
 START='start'
-FILE='../../../add2.v'
-OUTPUT_DIRECTORY='./verilog'
+FILE='../../add2.v'
+OUTPUT_DIRECTORY='.'
 SUB_DIRECTORY='/me/changwei/verilog/parser'
 OUTPUT_SRC_DIRECTORY="${OUTPUT_DIRECTORY}/target/generated-sources${SUB_DIRECTORY}"
 OUTPUT_BIN_DIRECTORY="${OUTPUT_DIRECTORY}/target/classes"
