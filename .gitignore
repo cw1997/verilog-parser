@@ -22,3 +22,6 @@ a.out
 .antlr
 /verilog/src/main/java/me/changwei/verilog/parser
 /verilog/target
+
+# idea
+.idea
