@@ -76,5 +76,32 @@ always @(posedge clk or negedge rst_n) begin
         result_and <= add1 & add2;
     end
 end
+
+//instance
+sub2 #(
+    .clk_freq(50_000_000),
+    .flag ( 1 )
+) unit_inst (
+    .p1 ( net1 ),
+    .p2 ( net2 ),
+    net3,
+    .clk(clk), .rst_n(rst_n)
+);
+
+instance_without_parameter unit_inst (
+    .p1 ( net1 ),
+    .p2 ( net2 ),
+    net3,
+    .clk(clk), .rst_n(rst_n)
+);
+
+instance_without_name (
+    .p1 ( net1 ),
+    .p2 ( net2 ),
+    net3,
+    .clk(clk), .rst_n(rst_n)
+);
+
+instance_without_port ();
     
 endmodule
