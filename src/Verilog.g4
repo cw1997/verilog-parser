@@ -33,6 +33,7 @@ moduleBody:
 | wireList
 | regList
 | always
+| instance
 )*
 ;
 
@@ -93,6 +94,18 @@ conditionBlock: IF condition (codeBlock|(ELSE (codeBlock|conditionBlock)))+;
 condition: PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT;
 codeBlock: BEGIN (statement|conditionBlock)* END;
 
+//module_name #(.clk_freq(50_000_000),.flag ( 1 )) instance_name (.clk(clk), .rst_n(rst_n));
+instance: ID instanceParameter? ID? PARENTHESIS_LEFT instancePortList? PARENTHESIS_RIGHT SEMICOLON;
+instanceParameter: POUND PARENTHESIS_LEFT instanceParameterList? PARENTHESIS_RIGHT;
+instanceParameterList: instanceParameterItem (COMMA instanceParameterItem)*;
+instancePortList: instanceParameterItem (COMMA instanceParameterItem)*;
+//.p1(net)
+//net
+instanceParameterItem
+: DOT lValue PARENTHESIS_LEFT rValue? PARENTHESIS_RIGHT
+| rValue
+;
+
 //[7:0] [:0] [7:] [:]
 bitRange: BRACKET_LEFT NUMBER_INTEGER? COLON NUMBER_INTEGER? BRACKET_RIGHT;
 
@@ -119,6 +132,7 @@ COMMA: ',';
 SEMICOLON: ';';
 COLON: ':';
 POUND: '#';
+DOT: '.';
 
 MODULE: 'module';
 ENDMODULE: 'endmodule';
