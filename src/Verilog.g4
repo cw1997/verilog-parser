@@ -101,9 +101,7 @@ eventItem: EDGE lValue;
 //task block
 task: TASK ID SEMICOLON definitionList BEGIN taskBody END ENDTASK;
 definitionList: (portItemStatement|wireList|regList|defineInteger)*;
-taskBody: (
-sensitive|statement|repeat
-)*;
+taskBody: (sensitive|statement|repeat)*;
 //end task block
 
 repeat: REPEAT PARENTHESIS_LEFT NUMBER_INTEGER PARENTHESIS_RIGHT codeBlock;
