@@ -88,20 +88,27 @@ regItem: lValue;
 //always @() begin alwaysBody* end;
 //always begin alwaysBody* end;
 always: ALWAYS (AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT)? BEGIN alwaysBody END;
-alwaysBody: (statement|conditionBlock)*;
+alwaysBody: (statement|conditionBlock|taskCall|sensitiveStatement)*;
 //end always
 
+//@(clk,rst_n)
+//@(posedge clk or negedge rst_n)
 sensitive: AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT;
+//(clk,rst_n)
+sensitiveStatement: AT PARENTHESIS_LEFT eventList PARENTHESIS_RIGHT SEMICOLON;
 eventAny: '*';
 //posedge clk or negedge rst_n
-eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
+eventList: eventListOR|eventListCOMMA;
+eventListOR: eventItem ('or' eventItem)*;
+eventListCOMMA: lValue (COMMA lValue)*;
 //posedge clk
-eventItem: EDGE lValue;
+eventItem: EDGE? lValue;
 
 //task block
-task: TASK ID SEMICOLON definitionList BEGIN taskBody END ENDTASK;
-definitionList: (portItemStatement|wireList|regList|defineInteger)*;
+task: TASK ID SEMICOLON taskDefinitionList BEGIN taskBody END ENDTASK;
+taskDefinitionList: (portItemStatement|wireList|regList|defineInteger)*;
 taskBody: (sensitive|statement|repeat)*;
+taskCall: ID (PARENTHESIS_LEFT nameList? PARENTHESIS_RIGHT)? SEMICOLON;
 //end task block
 
 repeat: REPEAT PARENTHESIS_LEFT NUMBER_INTEGER PARENTHESIS_RIGHT codeBlock;
