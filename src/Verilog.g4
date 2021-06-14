@@ -84,7 +84,9 @@ regList: netType bitRange? regItem (COMMA regItem)* SEMICOLON;
 regItem: lValue;
 
 //always @(eventList|*) begin alwaysBody* end;
-always: ALWAYS AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT BEGIN alwaysBody* END;
+//always @() begin alwaysBody* end;
+//always begin alwaysBody* end;
+always: ALWAYS (AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT)? BEGIN alwaysBody* END;
 
 eventAny: '*';
 //posedge clk or negedge rst_n
