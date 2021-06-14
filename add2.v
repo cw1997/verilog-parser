@@ -38,6 +38,8 @@ wire [7:0] complexExpression = 1 + (2 + 3) * 4 + 6 / (7 - 8)- w2 * (2 | w3 & (w1
 assign result_ori = 9'b0_1234_5678;
 // assign result = add1 + add2;
 
+wire [3:0] signal = (complexExpression == 8'b1234_5678) ? 4'b9876 : 0;
+
 always @(posedge clk or negedge rst_n) begin
     result <= add1 + add2 + add3;
     if (~rst_n) begin
