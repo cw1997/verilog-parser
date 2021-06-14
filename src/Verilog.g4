@@ -39,6 +39,7 @@ moduleBody:
 | regList
 | always
 | instance
+| task
 )*
 ;
 
@@ -87,22 +88,40 @@ regItem: lValue;
 //always @() begin alwaysBody* end;
 //always begin alwaysBody* end;
 always: ALWAYS (AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT)? BEGIN alwaysBody* END;
+alwaysBody: statement|conditionBlock;
+//end always
 
+sensitive: AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT;
 eventAny: '*';
 //posedge clk or negedge rst_n
 eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
 //posedge clk
 eventItem: EDGE lValue;
 
-alwaysBody: statement|conditionBlock;
-//end always
+//task block
+task: TASK ID SEMICOLON definitionList BEGIN taskBody END ENDTASK;
+definitionList: (portItemStatement|wireList|regList|defineInteger)*;
+taskBody: (
+sensitive|statement|repeat
+)*;
+//end task block
+
+repeat: REPEAT PARENTHESIS_LEFT NUMBER_INTEGER PARENTHESIS_RIGHT codeBlock;
+
+defineInteger: INTEGER nameList SEMICOLON;
+
+nameList: ID (COMMA ID)*;
 
 statement: lValue assignment rValue SEMICOLON;
 
 //condition
 conditionBlock: IF condition (codeBlock|(ELSE (codeBlock|conditionBlock)))+;
 condition: PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT;
-codeBlock: BEGIN (statement|conditionBlock)* END;
+codeBlock:
+BEGIN (statement|conditionBlock)* END
+|
+(statement|conditionBlock SEMICOLON)
+;
 //end condition
 
 //module_name #(.clk_freq(50_000_000),.flag ( 1 )) instance_name (.clk(clk), .rst_n(rst_n));
@@ -140,6 +159,8 @@ BRACKET_RIGHT: ']';
 PORT_DIRECTION: 'input'|'output'|'inout';
 EDGE: 'posedge'|'negedge';
 
+INTEGER: 'integer';
+
 COMMA: ',';
 SEMICOLON: ';';
 COLON: ':';
@@ -149,6 +170,11 @@ QUESTION_MARK: '?';
 
 MODULE: 'module';
 ENDMODULE: 'endmodule';
+
+TASK: 'task';
+ENDTASK: 'endtask';
+
+REPEAT: 'repeat';
 
 PARAMETER: 'parameter';
 LOCALPARAM: 'localparam';
