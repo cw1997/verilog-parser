@@ -21,19 +21,20 @@ parameterName: ID;
 portBlock: PARENTHESIS_LEFT portList? PARENTHESIS_RIGHT;
 //input i1, i2
 portList: portItem (COMMA portItem)*;
-//output wire [3:0] o1, o2,
-portItem:
-PORT_DIRECTION netType? bitRange? portNameList
-|
-portName
-;
+//output wire [3:0] o1, o2
+portField: PORT_DIRECTION netType? bitRange? portNameList;
+portItem: portField|portName;
 //o3, o4,
 portNameList: portName (COMMA portName)*;
 portName: ID;
 
+//input    [ width-1 : 0]   A, B;
+portItemStatement: portField SEMICOLON;
+
 moduleBody:
 ( assign
 | paramList
+| portItemStatement
 | wireList
 | regList
 | always
