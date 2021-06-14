@@ -87,8 +87,8 @@ regItem: lValue;
 //always @(eventList|*) begin alwaysBody* end;
 //always @() begin alwaysBody* end;
 //always begin alwaysBody* end;
-always: ALWAYS (AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT)? BEGIN alwaysBody* END;
-alwaysBody: statement|conditionBlock;
+always: ALWAYS (AT PARENTHESIS_LEFT (eventList|eventAny)? PARENTHESIS_RIGHT)? BEGIN alwaysBody END;
+alwaysBody: (statement|conditionBlock)*;
 //end always
 
 sensitive: AT PARENTHESIS_LEFT eventList? PARENTHESIS_RIGHT;
