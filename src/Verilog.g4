@@ -52,6 +52,7 @@ rValue
 | rValue (DOUBLE_EQUAL|DOUBLE_NONEQUAL) rValue
 | rValue (OPERATOR_BOOLEAN_SYMBOL_SINGLE) rValue
 | rValue (OPERATOR_BOOLEAN_SYMBOL_DOUBLE) rValue
+| rValue QUESTION_MARK rValue COLON rValue
 | operand
 | PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT
 ;
@@ -133,6 +134,7 @@ SEMICOLON: ';';
 COLON: ':';
 POUND: '#';
 DOT: '.';
+QUESTION_MARK: '?';
 
 MODULE: 'module';
 ENDMODULE: 'endmodule';
