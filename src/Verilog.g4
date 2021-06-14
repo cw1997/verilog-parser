@@ -48,7 +48,7 @@ moduleFooter: ENDMODULE;
 //========================================
 
 variable: NUMBER_INTEGER|ID;
-operand: OPERATOR_UNARY?variable;
+operand: (((ADD|SUB)?OPERATOR_UNARY)|((ADD|SUB)OPERATOR_UNARY?))?variable;
 lValue: ID;
 rValue
 : rValue (MUL|DIV|MOD) rValue
