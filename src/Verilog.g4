@@ -95,12 +95,15 @@ eventList: eventItem (OPERATOR_BOOLEAN_TEXT eventItem)*;
 eventItem: EDGE lValue;
 
 alwaysBody: statement|conditionBlock;
+//end always
 
 statement: lValue assignment rValue SEMICOLON;
 
+//condition
 conditionBlock: IF condition (codeBlock|(ELSE (codeBlock|conditionBlock)))+;
 condition: PARENTHESIS_LEFT rValue PARENTHESIS_RIGHT;
 codeBlock: BEGIN (statement|conditionBlock)* END;
+//end condition
 
 //module_name #(.clk_freq(50_000_000),.flag ( 1 )) instance_name (.clk(clk), .rst_n(rst_n));
 instance: ID instanceParameter? ID? PARENTHESIS_LEFT instancePortList? PARENTHESIS_RIGHT SEMICOLON;
