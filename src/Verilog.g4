@@ -112,7 +112,8 @@ instanceParameterItem
 ;
 
 //[7:0] [:0] [7:] [:]
-bitRange: BRACKET_LEFT NUMBER_INTEGER? COLON NUMBER_INTEGER? BRACKET_RIGHT;
+//[ width-1 : 0]
+bitRange: BRACKET_LEFT rValue? COLON rValue? BRACKET_RIGHT;
 
 assignment: EQUAL|LESS_THAN_EQUAL;
 netType: WIRE|REG;
